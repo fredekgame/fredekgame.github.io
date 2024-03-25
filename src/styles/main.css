@@ -1,0 +1,218 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.home_header {
+    background-image: url("texture 2.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.col-sm {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.main_name {
+    color: white;
+    font-size: calc(14px + 1vw);
+}
+
+a {
+    text-align: end;
+}
+
+.form-control {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-bottom: 1px solid grey;
+    border-radius: 0%;
+    width: 150%;
+    font-size: 1rem;
+}
+
+input.form-control:active {
+    background-color: transparent;
+}
+
+.container-fluid {
+    padding: 0;
+    background-color: transparent;
+    position: relative !important;
+}
+
+.d-flex {
+    width: 110%;
+    background-color: transparent;
+}
+
+div.row {
+    max-width: 100%;
+}
+
+div.col-sm-4 {
+    padding: 0;
+    padding-left: 2%;
+    padding-top: 7%;
+}
+
+.card-title {
+    margin: 0;
+}
+
+a.card-a {
+    text-decoration: none !important;
+    color: white;
+    margin-left: 10%;
+}
+
+a.card-a:hover {
+    color: lightgray;
+}
+
+a.card-a.active {
+    border-bottom: 2px solid red;
+}
+
+button.btn-link {
+    color: darkorange;
+    border-bottom: none;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0;
+}
+
+button.btn-link:hover {
+    background-color: white;
+    border: none;
+    border-bottom: none;
+    color: black;
+}
+
+.navbar {
+    padding: 0;
+    margin: 0;
+    background-color: transparent !important;
+}
+
+.modalBody {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 50%;
+    height: 80%;
+}
+
+.modalBody .buttonModal {
+    float: right;
+}
+
+.imageMovies {
+    max-width: 90% !important;
+    max-height: 100% !important;
+}
+
+.buttonModal {
+    margin: 10px;
+}
+
+.about-title-block {
+    max-height: 50%;
+}
+
+.about-blank {
+    font-size: 0.9vw;
+}
+
+
+.voteCountAv {
+    display: inline-block;
+    background-color: orangered;
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+}
+
+.voteCountVt {
+    margin-left: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: lightgrey;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.voteCountbK {
+    padding-left: 5px;
+    padding-right: 5px;
+    display: inline-block;
+}
+
+.aboutBlockInform {
+    font-weight: 600;
+}
+
+.btn-warning {
+    background-color: orangered;
+    border-color: orangered;
+    margin-right: 20px;
+}
+
+.button-holder {
+    display: block !important;
+}
+
+#watchedBtn {
+    margin-left: 100px;
+}
+
+#playerContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 640px;
+    height: 360px;
+    z-index: 9999;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.show {
+    display: block;
+}
+
+.error-message {
+    color: red;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+}
+
+footer {
+    background-color: #F7F7F7;
+    padding: 10px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+footer p {
+    margin-top: 5px;
+}
+
+.card {
+    --bs-card-border-color: transparent !important;
+}
