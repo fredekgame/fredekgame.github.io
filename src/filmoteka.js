@@ -68,7 +68,7 @@ export default class FilmotekaInfo {
         this.imageBody.appendChild(this.imageMovies)
 
         this.buttonYT = document.createElement('button')
-        this.buttonYT.className = 'btn btn-outline-dark'
+        this.buttonYT.className = 'btn btn-outline-dark WT'
         this.buttonYT.type = 'button'
         this.buttonYT.textContent = 'WATCH TRAILER'
         this.imageBody.appendChild(this.buttonYT)

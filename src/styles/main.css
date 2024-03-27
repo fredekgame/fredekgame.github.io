@@ -216,3 +216,19 @@ footer p {
 .card {
     --bs-card-border-color: transparent !important;
 }
+
+.WT {
+    margin-top: 15px;
+    width: 90%;
+}
+
+@media screen and (max-width: 1300px) and (min-width: 600px) {
+    .card-a {
+        float: left;
+        margin-left: 12px !important;
+    }
+
+    .home {
+        margin-left: 0 !important;
+    }
+}
