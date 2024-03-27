@@ -150,7 +150,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     const createModal = new FilmotekaInfo(this.filmidss_)
                     createModal.loadData(this.filmidss_)
                 });
-
                 
                 function getGenreName(genreId) {
                     const genreMapping = {
