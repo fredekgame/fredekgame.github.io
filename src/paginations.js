@@ -151,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     createModal.loadData(this.filmidss_)
                 });
 
+                
                 function getGenreName(genreId) {
                     const genreMapping = {
                         12: "Adventure",
