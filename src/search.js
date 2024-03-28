@@ -11,11 +11,17 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault()
         const searchInput = document.getElementById('searchInput').value;
         const filmContainer = document.querySelector('.row.second')
-        while (filmContainer.firstChild) {
-            filmContainer.removeChild(filmContainer.firstChild);
+        if (searchInput.trim() === '') {
+            window.location.href = '/'
+        } else {
+            while (filmContainer.firstChild) {
+                filmContainer.removeChild(filmContainer.firstChild);
+            }
+            searchMovies(searchInput, filmContainer, currentPage)
         }
-        searchMovies(searchInput, filmContainer, currentPage)
     });
+
+    searchMovies('', filmContainer, currentPage)
 
     addPagination('', filmContainer, 0, currentPage)
 });
@@ -93,8 +99,12 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
 
     const filmContainer_ = document.getElementsByClassName('row second')[0];
     filmContainer_.insertAdjacentElement('afterend', paginationContainer);
-    console.log("Current page:", currentPage);
-    console.log("Search input:", searchInput);
+
+    if (totalMovies < 2) {
+        paginationList.style.display = 'none'
+    } else {
+        paginationList.style.display = 'block'
+    }
 }
 
 
@@ -105,14 +115,13 @@ function searchMovies(searchInput, filmContainer, currentPage) {
             const films = response.results;
 
             filmContainer.innerHTML = '';
-                
+
             films.forEach(film => {
                 new SearchFilmoteka(film, filmContainer)
             })
             totalMovies = response.total_pages
             addPagination(searchInput, filmContainer, totalMovies, currentPage)
             scrollToTop()
-            console.log(currentPage)
         })
         .catch(err => console.error(err));
 }
@@ -127,6 +136,7 @@ function scrollToTop() {
 class SearchFilmoteka {
     constructor(film, filmContainer) {
         this.container = filmContainer
+        this.filmidss_ = film.id
         this.created(film)
     }
 
@@ -162,12 +172,13 @@ class SearchFilmoteka {
         this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
         this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
         this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
-        this.a = document.createElement('a')
-        this.a.className = 'card-link'
-        this.a.href = ''
-        this.a.textContent = `${this.genres} | ${this.releaseYear || this.airReleaseYear}`
-        this.secondDiv.appendChild(this.a)
-        this.a.addEventListener('click', (event) => {
+
+        this.aT = document.createElement('button')
+        this.aT.className = 'btn btn-link'
+        this.aT.type = "button"
+        this.aT.textContent = `${this.genres} | ${this.releaseYear || this.airReleaseYear}`
+        this.secondDiv.appendChild(this.aT)
+        this.aT.addEventListener('click', (event) => {
             event.preventDefault();
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)

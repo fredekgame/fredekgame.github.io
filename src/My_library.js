@@ -8,15 +8,6 @@ class FilmotekaQueue {
         this.queueBtn = document.getElementById('queueBtn');
         this.addedMovies = {}
 
-        // localStorage.setItem('addedFilm', JSON.stringify(filmInfo));
-        // window.addEventListener('storage', function (event) {
-        //     if (event.key === 'addedFilm') {
-        //         const addedFilm = JSON.parse(event.newValue);
-        //         // Здесь вы можете обновить данные в соответствии с добавленным фильмом
-        //     }
-        // });
-
-
         this.initializeLibrary();
 
         this.renderWatchedMovies()

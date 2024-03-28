@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
                 this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
                 this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
+                
                 this.a = document.createElement('button')
                 this.a.className = 'btn btn-link'
                 this.a.type = 'button'

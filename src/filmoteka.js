@@ -34,6 +34,8 @@ export default class FilmotekaInfo {
                 this.playerVideo(response)
             })
             .catch(err => console.error(err));
+        
+        this.checkFilmInLists(filmId)
     }
 
     createMOdal(filmData) {
@@ -43,6 +45,7 @@ export default class FilmotekaInfo {
 
         this.closeButton = document.createElement('buttonModal');
         this.closeButton.innerHTML = 'X';
+        this.closeButton.className = 'clossrdBTN'
         this.closeButton.addEventListener('click', (event) => {
             this.closeModal()
         });
@@ -208,22 +211,9 @@ export default class FilmotekaInfo {
         this.buttonDT = document.createElement('button')
         this.buttonDT.className = 'btn btn-danger'
         this.buttonDT.type = 'button'
+        this.buttonDT.style.display = 'none';
         this.buttonDT.textContent = 'DELETE FROM LIST'
         this.informBody.appendChild(this.buttonDT)
-
-        if (this.isInWatched || this.isInQueue) {
-            // Если фильм уже добавлен, показываем только кнопку DELETE FROM LIST
-            if (this.buttonWT) {
-                this.buttonWT.style.display = 'none';
-            }
-            if (this.buttonQE) {
-                this.buttonQE.style.display = 'none';
-            }
-            this.buttonDT.style.display = 'block';
-        } else {
-            // Если фильм еще не добавлен, показываем кнопки ADD TO WATCHED и ADD TO QUEUE
-            this.buttonDT.style.display = 'none';
-        }
 
         this.buttonDT.addEventListener('click', function (event) {
             let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
@@ -231,18 +221,13 @@ export default class FilmotekaInfo {
 
             watchedMovies = watchedMovies.filter(movie => movie.id !== filmData.id);
             queueMovies = queueMovies.filter(movie => movie.id !== filmData.id);
-
-            // Обновляем localStorage
             localStorage.setItem('watched', JSON.stringify(watchedMovies));
             localStorage.setItem('queue', JSON.stringify(queueMovies));
 
-            // Закрываем модальное окно
             this.closeModal();
         }.bind(this));
 
-
         document.body.appendChild(this.modal);
-
         return this.modal;
     }
 
@@ -259,8 +244,6 @@ export default class FilmotekaInfo {
 
         const trailerResult = videoId.results.find(result => containsOfficialAndTrailer(result.name));
         const key = trailerResult ? trailerResult.key : null
-
-
 
         if (key) {
             console.log(key);
@@ -336,5 +319,19 @@ export default class FilmotekaInfo {
 
     closeModal() {
         this.modal.style.display = 'none';
+    }
+
+    checkFilmInLists(filmId) {
+        const queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+        const watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
+        const isInQueue = queueMovies.some(movie => movie.id === filmId);
+        const isInWatched = watchedMovies.some(movie => movie.id === filmId);
+
+        if (isInQueue || isInWatched) {
+            const deleteButton = document.querySelector('.btn-danger');
+            if (deleteButton) {
+                deleteButton.style.display = 'block';
+            }
+        }
     }
 }
