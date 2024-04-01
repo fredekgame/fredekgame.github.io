@@ -1,21 +1,21 @@
 import './styles/main.css'
-import FilmotekaInfo from './filmoteka';
+import FilmotekaInfo from './filmoteka'
 
-let currentPage = 1;
-const moviesPerPage = 18;
+let currentPage = 1
+const moviesPerPage = 18
 let totalMovies = 0
 
 document.addEventListener('DOMContentLoaded', function () {
-    const searchForm = document.getElementById('searchForm');
+    const searchForm = document.getElementById('searchForm')
     searchForm.addEventListener('submit', function (event) {
         event.preventDefault()
-        const searchInput = document.getElementById('searchInput').value;
+        const searchInput = document.getElementById('searchInput').value
         const filmContainer = document.querySelector('.row.second')
         if (searchInput.trim() === '') {
             window.location.href = '/'
         } else {
             while (filmContainer.firstChild) {
-                filmContainer.removeChild(filmContainer.firstChild);
+                filmContainer.removeChild(filmContainer.firstChild)
             }
             searchMovies(searchInput, filmContainer, currentPage)
         }
@@ -35,70 +35,70 @@ const options = {
 };
 
 function addPagination(searchInput, filmContainer, totalPages, currentPage) {
-    const existingPagination = document.getElementById('pagination');
+    const existingPagination = document.getElementById('pagination')
     if (existingPagination) {
-        existingPagination.parentNode.removeChild(existingPagination);
+        existingPagination.parentNode.removeChild(existingPagination)
     }
 
-    const paginationContainer = document.createElement('nav');
-    paginationContainer.setAttribute('aria-label', 'Page navigation');
-    paginationContainer.id = 'pagination';
-    paginationContainer.classList.add('d-flex', 'justify-content-center');
+    const paginationContainer = document.createElement('nav')
+    paginationContainer.setAttribute('aria-label', 'Page navigation')
+    paginationContainer.id = 'pagination'
+    paginationContainer.classList.add('d-flex', 'justify-content-center')
 
-    const paginationList = document.createElement('div');
-    paginationList.classList.add('btn-group');
+    const paginationList = document.createElement('div')
+    paginationList.classList.add('btn-group')
 
-    const previousLink = document.createElement('button');
-    previousLink.classList.add('btn', 'btn-primary');
+    const previousLink = document.createElement('button')
+    previousLink.classList.add('btn', 'btn-primary')
     previousLink.textContent = 'Previous';
 
     previousLink.addEventListener('click', (event) => {
-        event.preventDefault();
+        event.preventDefault()
         if (currentPage > 1) {
-            currentPage--;
-            searchMovies(searchInput, filmContainer, currentPage, options);
+            currentPage--
+            searchMovies(searchInput, filmContainer, currentPage, options)
             searchForm.dispatchEvent(new Event('submit'))
         }
     });
 
-    paginationList.appendChild(previousLink);
+    paginationList.appendChild(previousLink)
 
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, startPage + 4);
+    const startPage = Math.max(1, currentPage - 2)
+    const endPage = Math.min(totalPages, startPage + 4)
 
     for (let i = startPage; i <= endPage; i++) {
-        const pageLink = document.createElement('button');
-        pageLink.classList.add('btn', i === currentPage ? 'btn-primary' : 'btn-secondary');
-        pageLink.textContent = i;
+        const pageLink = document.createElement('button')
+        pageLink.classList.add('btn', i === currentPage ? 'btn-primary' : 'btn-secondary')
+        pageLink.textContent = i
 
         pageLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            currentPage = i;
-            searchMovies(searchInput, filmContainer, currentPage, options);
+            event.preventDefault()
+            currentPage = i
+            searchMovies(searchInput, filmContainer, currentPage, options)
             scrollToTop()
         });
-        paginationList.appendChild(pageLink);
+        paginationList.appendChild(pageLink)
     }
 
-    const nextLink = document.createElement('button');
-    nextLink.classList.add('btn', 'btn-primary');
-    nextLink.textContent = 'Next';
+    const nextLink = document.createElement('button')
+    nextLink.classList.add('btn', 'btn-primary')
+    nextLink.textContent = 'Next'
 
     nextLink.addEventListener('click', (event) => {
-        event.preventDefault();
+        event.preventDefault()
         if (currentPage < totalPages) {
-            currentPage++;
-            searchMovies(searchInput, filmContainer, currentPage, options);
+            currentPage++
+            searchMovies(searchInput, filmContainer, currentPage, options)
             scrollToTop()
         }
     });
 
-    paginationList.appendChild(nextLink);
+    paginationList.appendChild(nextLink)
 
-    paginationContainer.appendChild(paginationList);
+    paginationContainer.appendChild(paginationList)
 
-    const filmContainer_ = document.getElementsByClassName('row second')[0];
-    filmContainer_.insertAdjacentElement('afterend', paginationContainer);
+    const filmContainer_ = document.getElementsByClassName('row second')[0]
+    filmContainer_.insertAdjacentElement('afterend', paginationContainer)
 
     if (totalMovies < 2) {
         paginationList.style.display = 'none'
@@ -112,9 +112,9 @@ function searchMovies(searchInput, filmContainer, currentPage) {
     fetch(`https://api.themoviedb.org/3/search/movie?query=${searchInput}&include_adult=false&language=en-US&page=${currentPage}`, options)
         .then(response => response.json())
         .then(response => {
-            const films = response.results;
+            const films = response.results
 
-            filmContainer.innerHTML = '';
+            filmContainer.innerHTML = ''
 
             films.forEach(film => {
                 new SearchFilmoteka(film, filmContainer)
@@ -123,14 +123,14 @@ function searchMovies(searchInput, filmContainer, currentPage) {
             addPagination(searchInput, filmContainer, totalMovies, currentPage)
             scrollToTop()
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
 }
 
 function scrollToTop() {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
-    });
+    })
 }
 
 class SearchFilmoteka {
@@ -152,7 +152,7 @@ class SearchFilmoteka {
         this.contentImage = document.createElement('img')
         console.log(options.title)
         if (film.poster_path) {
-            this.contentImage.src = `https://image.tmdb.org/t/p/w500${film.poster_path}`;
+            this.contentImage.src = `https://image.tmdb.org/t/p/w500${film.poster_path}`
         } else {
             this.contentImage.src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
         }
@@ -169,9 +169,9 @@ class SearchFilmoteka {
         this.title.textContent = film.title || film.name
         this.secondDiv.appendChild(this.title)
 
-        this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
-        this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
-        this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
+        this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')
+        this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
+        this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
 
         this.aT = document.createElement('button')
         this.aT.className = 'btn btn-link'
@@ -179,10 +179,10 @@ class SearchFilmoteka {
         this.aT.textContent = `${this.genres} | ${this.releaseYear || this.airReleaseYear}`
         this.secondDiv.appendChild(this.aT)
         this.aT.addEventListener('click', (event) => {
-            event.preventDefault();
+            event.preventDefault()
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
-        });
+        })
 
         function getGenreName(genreId) {
             const genreMapping = {
@@ -205,9 +205,9 @@ class SearchFilmoteka {
                 10751: "Family",
                 10752: "War",
                 10770: "TV Movie"
-            };
+            }
 
-            return genreMapping[genreId] || 'Unknown Genre';
+            return genreMapping[genreId] || 'Unknown Genre'
         }
     }
 }

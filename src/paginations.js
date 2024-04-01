@@ -1,5 +1,5 @@
 import './styles/main.css'
-import FilmotekaInfo from './filmoteka';
+import FilmotekaInfo from './filmoteka'
 
 document.addEventListener("DOMContentLoaded", function () {
     if (window.location.pathname === '/paginats.html') {
@@ -9,79 +9,82 @@ document.addEventListener("DOMContentLoaded", function () {
                 accept: 'application/json',
                 Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOTQzZDU0YWQ3YjRlOTU2ZTM0ODc5NTdkODE0Y2VhZCIsInN1YiI6IjY1OGM1MDVmMzAzYzg1MDcxOGE1NGUyNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l8WuJ13hO2VbApbmpEtMEuhAmw5eQdfXAdTyqDGoZYc`
             }
-        };
+        }
 
-        const filmsPerPage = 18;
-        let currentPage = 1;
-        const maxDisplayedPages = 5;
+        const filmsPerPage = 18
+        let currentPage = 1
+        const maxDisplayedPages = 5
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetchMovies(currentPage);
+            fetchMovies(currentPage)
         });
 
-        const paginationContainer = document.createElement('div');
-        paginationContainer.className = 'pagination-container d-flex justify-content-center';
-        document.body.appendChild(paginationContainer);
+        const paginationContainer = document.createElement('div')
+        paginationContainer.className = 'pagination-container d-flex justify-content-center'
+        document.body.appendChild(paginationContainer)
 
         const prevButton = createPaginationButton('Previous', () => {
             if (currentPage > 1) {
-                currentPage--;
-                fetchMovies(currentPage);
+                currentPage--
+                fetchMovies(currentPage)
             }
-        });
-        paginationContainer.appendChild(prevButton);
+        })
 
-        const pageNumbersContainer = document.createElement('div');
-        pageNumbersContainer.className = 'pagination-page-numbers';
-        paginationContainer.appendChild(pageNumbersContainer);
+        paginationContainer.appendChild(prevButton)
+
+        const pageNumbersContainer = document.createElement('div')
+        pageNumbersContainer.className = 'pagination-page-numbers'
+        paginationContainer.appendChild(pageNumbersContainer)
 
         const nextButton = createPaginationButton('Next', () => {
-            currentPage++;
-            fetchMovies(currentPage);
-        });
-        paginationContainer.appendChild(nextButton);
+            currentPage++
+            fetchMovies(currentPage)
+        })
+
+        paginationContainer.appendChild(nextButton)
 
         function createPaginationButton(label, onClick) {
-            const button = document.createElement('button');
-            button.className = 'btn btn-sm';
+            const button = document.createElement('button')
+            button.className = 'btn btn-sm'
             if (label === 'Previous') {
-                button.className += ' btn-primary'; 
+                button.className += ' btn-primary'
             } else if (label === 'Next') {
-                button.className += ' btn-primary'; 
+                button.className += ' btn-primary'
             }
-            button.textContent = label;
-            button.addEventListener('click', onClick);
-            return button;
+
+            button.textContent = label
+            button.addEventListener('click', onClick)
+            return button
         }
 
         function updatePageNumbers() {
-            pageNumbersContainer.innerHTML = ''; 
+            pageNumbersContainer.innerHTML = ''
 
-            let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
-            let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1);
+            let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2))
+            let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1)
 
             if (endPage - startPage < maxDisplayedPages - 1) {
-                startPage = Math.max(1, endPage - maxDisplayedPages + 1);
+                startPage = Math.max(1, endPage - maxDisplayedPages + 1)
             }
 
             for (let i = startPage; i <= endPage; i++) {
                 const pageNumberButton = createPaginationButton(`${i}`, () => {
-                    currentPage = i;
-                    fetchMovies(currentPage);
+                    currentPage = i
+                    fetchMovies(currentPage)
                 });
 
                 if (i === currentPage) {
-                    pageNumberButton.classList.add('btn-primary');
+                    pageNumberButton.classList.add('btn-primary')
                 } else {
-                    pageNumberButton.classList.add('btn-secondary');
+                    pageNumberButton.classList.add('btn-secondary')
                 }
 
-                pageNumbersContainer.appendChild(pageNumberButton);
+                pageNumbersContainer.appendChild(pageNumberButton)
             }
         }
 
         function fetchMovies(page) {
-            const url = `https://api.themoviedb.org/3/trending/all/day?language=en-US&page=${page}`;
+            const url = `https://api.themoviedb.org/3/trending/all/day?language=en-US&page=${page}`
 
             fetch(url, options)
                 .then(response => response.json())
@@ -89,25 +92,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     const films = response.results;
                     const filmContainer = document.getElementsByClassName('row second')[0];
 
-                    filmContainer.innerHTML = ''; 
+                    filmContainer.innerHTML = ''
 
                     films.forEach(film => {
-                        new AllFilmoteka(film, filmContainer);
+                        new AllFilmoteka(film, filmContainer)
                     });
 
-                    totalPages = response.total_pages;
-                    updatePageNumbers();
+                    totalPages = response.total_pages
+                    updatePageNumbers()
                     scrollToTop()
                 })
-                .catch(err => console.error(err));
+                .catch(err => console.error(err))
         }
 
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' })
         }
 
-        let totalPages = 1; 
-        updatePageNumbers();
+        let totalPages = 1
+        updatePageNumbers()
 
         class AllFilmoteka {
             constructor(film, container) {
@@ -137,9 +140,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.title.textContent = film.title || film.name
                 this.secondDiv.appendChild(this.title)
 
-                this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
-                this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
-                this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
+                this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')
+                this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
+                this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
                 
                 this.a = document.createElement('button')
                 this.a.className = 'btn btn-link'
@@ -150,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     event.preventDefault();
                     const createModal = new FilmotekaInfo(this.filmidss_)
                     createModal.loadData(this.filmidss_)
-                });
+                })
                 
                 function getGenreName(genreId) {
                     const genreMapping = {
@@ -181,12 +184,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         10766: "Soap",
                         10767: "Talk",
                         10768: "War & Politics"
-                    };
+                    }
 
-                    return genreMapping[genreId] || 'Unknown Genre';
+                    return genreMapping[genreId] || 'Unknown Genre'
                 }
             }
         }
     }
-});
+})
 

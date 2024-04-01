@@ -1,4 +1,4 @@
-import YouTubePlayer from 'youtube-player';
+import YouTubePlayer from 'youtube-player'
 
 export default class FilmotekaInfo {
     constructor() {
@@ -11,20 +11,20 @@ export default class FilmotekaInfo {
                 accept: 'application/json',
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOTQzZDU0YWQ3YjRlOTU2ZTM0ODc5NTdkODE0Y2VhZCIsInN1YiI6IjY1OGM1MDVmMzAzYzg1MDcxOGE1NGUyNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l8WuJ13hO2VbApbmpEtMEuhAmw5eQdfXAdTyqDGoZYc'
             }
-        };
+        }
 
         fetch(`https://api.themoviedb.org/3/movie/${filmId}?language=en-US`, options)
             .then(response => response.json())
             .then(response => {
                 this.createMOdal(response)
-                const genres = response.genres;
-                const genreIds = genres.map(genre => genre.id);
-                this.displayGenres(genreIds);
+                const genres = response.genres
+                const genreIds = genres.map(genre => genre.id)
+                this.displayGenres(genreIds)
 
 
             })
 
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
 
 
         fetch(`https://api.themoviedb.org/3/movie/${filmId}/videos?language=en-US`, options)
@@ -33,26 +33,26 @@ export default class FilmotekaInfo {
                 console.log(response)
                 this.playerVideo(response)
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
         
         this.checkFilmInLists(filmId)
     }
 
     createMOdal(filmData) {
-        this.modal = document.createElement('div');
-        this.modal.classList.add('modalBody');
-        this.modal.style.display = 'block';
+        this.modal = document.createElement('div')
+        this.modal.classList.add('modalBody')
+        this.modal.style.display = 'block'
 
-        this.closeButton = document.createElement('buttonModal');
-        this.closeButton.innerHTML = 'X';
+        this.closeButton = document.createElement('buttonModal')
+        this.closeButton.innerHTML = 'X'
         this.closeButton.className = 'clossrdBTN'
         this.closeButton.addEventListener('click', (event) => {
             this.closeModal()
         });
-        this.closeButton.style.position = 'absolute';
-        this.closeButton.style.top = '10px';
-        this.closeButton.style.right = '10px';
-        this.modal.appendChild(this.closeButton);
+        this.closeButton.style.position = 'absolute'
+        this.closeButton.style.top = '10px'
+        this.closeButton.style.right = '10px'
+        this.modal.appendChild(this.closeButton)
 
 
         this.footerbuddy = document.createElement('div')
@@ -76,20 +76,20 @@ export default class FilmotekaInfo {
         this.buttonYT.textContent = 'WATCH TRAILER'
         this.imageBody.appendChild(this.buttonYT)
 
-        this.playerContainer = document.createElement('div');
-        this.playerContainer.id = 'playerContainer';
-        this.playerContainer.classList.add('hidden');
+        this.playerContainer = document.createElement('div')
+        this.playerContainer.id = 'playerContainer'
+        this.playerContainer.classList.add('hidden')
 
-        this.youtubePlayer = document.createElement('div');
-        this.youtubePlayer.id = 'youtubePlayer';
+        this.youtubePlayer = document.createElement('div')
+        this.youtubePlayer.id = 'youtubePlayer'
 
-        this.closePlayerBtn = document.createElement('button');
-        this.closePlayerBtn.id = 'closePlayerBtn';
-        this.closePlayerBtn.textContent = 'Close player';
+        this.closePlayerBtn = document.createElement('button')
+        this.closePlayerBtn.id = 'closePlayerBtn'
+        this.closePlayerBtn.textContent = 'Close player'
 
-        this.playerContainer.appendChild(this.youtubePlayer);
-        this.playerContainer.appendChild(this.closePlayerBtn);
-        document.body.appendChild(this.playerContainer);
+        this.playerContainer.appendChild(this.youtubePlayer)
+        this.playerContainer.appendChild(this.closePlayerBtn)
+        document.body.appendChild(this.playerContainer)
 
         this.informBody = document.createElement('div')
         this.informBody.className = "col"
@@ -191,58 +191,58 @@ export default class FilmotekaInfo {
             img: filmData.poster_path,
             ganre__: filmData.genres,
             release: filmData.release_date,
-        };
+        }
 
         this.buttonQE.addEventListener('click', function (event) {
-            let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
-            queueMovies.push(filmInfo);
-            this.isInQueue = queueMovies.some(movie => movie.id === filmData.id);
-            localStorage.setItem('queue', JSON.stringify(queueMovies));
-        }.bind(this));
+            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
+            queueMovies.push(filmInfo)
+            this.isInQueue = queueMovies.some(movie => movie.id === filmData.id)
+            localStorage.setItem('queue', JSON.stringify(queueMovies))
+        }.bind(this))
 
         this.buttonWT.addEventListener('click', function (event) {
-            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
-            watchedMovies.push(filmInfo);
+            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
+            watchedMovies.push(filmInfo)
             console.log(filmInfo)
-            this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id);
-            localStorage.setItem('watched', JSON.stringify(watchedMovies));
-        }.bind(this));
+            this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id)
+            localStorage.setItem('watched', JSON.stringify(watchedMovies))
+        }.bind(this))
 
         this.buttonDT = document.createElement('button')
         this.buttonDT.className = 'btn btn-danger'
         this.buttonDT.type = 'button'
-        this.buttonDT.style.display = 'none';
+        this.buttonDT.style.display = 'none'
         this.buttonDT.textContent = 'DELETE FROM LIST'
         this.informBody.appendChild(this.buttonDT)
 
         this.buttonDT.addEventListener('click', function (event) {
-            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
-            let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
+            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
 
-            watchedMovies = watchedMovies.filter(movie => movie.id !== filmData.id);
-            queueMovies = queueMovies.filter(movie => movie.id !== filmData.id);
-            localStorage.setItem('watched', JSON.stringify(watchedMovies));
-            localStorage.setItem('queue', JSON.stringify(queueMovies));
+            watchedMovies = watchedMovies.filter(movie => movie.id !== filmData.id)
+            queueMovies = queueMovies.filter(movie => movie.id !== filmData.id)
+            localStorage.setItem('watched', JSON.stringify(watchedMovies))
+            localStorage.setItem('queue', JSON.stringify(queueMovies))
 
-            this.closeModal();
-        }.bind(this));
+            this.closeModal()
+        }.bind(this))
 
-        document.body.appendChild(this.modal);
-        return this.modal;
+        document.body.appendChild(this.modal)
+        return this.modal
     }
 
     playerVideo(videoId) {
-        const playerContainer = document.getElementById('youtubePlayer');
-        const newPlayer = document.createElement('div');
-        newPlayer.id = 'player';
+        const playerContainer = document.getElementById('youtubePlayer')
+        const newPlayer = document.createElement('div')
+        newPlayer.id = 'player'
 
-        playerContainer.appendChild(newPlayer);
+        playerContainer.appendChild(newPlayer)
 
         function containsOfficialAndTrailer(name) {
-            return name.toLowerCase().indexOf("official") !== -1 && name.toLowerCase().indexOf("trailer") !== -1;
+            return name.toLowerCase().indexOf("official") !== -1 && name.toLowerCase().indexOf("trailer") !== -1
         }
 
-        const trailerResult = videoId.results.find(result => containsOfficialAndTrailer(result.name));
+        const trailerResult = videoId.results.find(result => containsOfficialAndTrailer(result.name))
         const key = trailerResult ? trailerResult.key : null
 
         if (key) {
@@ -251,55 +251,55 @@ export default class FilmotekaInfo {
                 width: 640,
                 height: 360,
                 videoId: `${key}`, 
-            });
+            })
 
             this.buttonYT.addEventListener('click', function () {
-                document.getElementById('playerContainer').classList.remove('hidden');
-                document.getElementById('playerContainer').classList.add('show');
-                player.playVideo();
-            });
+                document.getElementById('playerContainer').classList.remove('hidden')
+                document.getElementById('playerContainer').classList.add('show')
+                player.playVideo()
+            })
 
             this.closePlayerBtn.addEventListener('click', function () {
-                document.getElementById('playerContainer').classList.remove('show');
-                document.getElementById('playerContainer').classList.add('hidden');
-                player.stopVideo();
+                document.getElementById('playerContainer').classList.remove('show')
+                document.getElementById('playerContainer').classList.add('hidden')
+                player.stopVideo()
 
                 while (playerContainer.firstChild) {
-                    playerContainer.removeChild(playerContainer.firstChild);
+                    playerContainer.removeChild(playerContainer.firstChild)
                 }
-            });
+            })
         } else {
             this.buttonYT.addEventListener('click', (event) => {
-                this.modalYT = document.createElement('div');
-                this.modalYT.className = 'modal';
-                this.modalYT.style.display = 'none';
-                this.modalYT.style.position = 'fixed';
-                this.modalYT.style.zIndex = '1';
-                this.modalYT.style.left = '0';
-                this.modalYT.style.top = '0';
-                this.modalYT.style.width = '100%';
-                this.modalYT.style.height = '100%';
-                this.modalYT.style.overflow = 'auto';
-                this.modalYT.style.backgroundColor = 'rgba(0,0,0,0.4)';
-                document.body.appendChild(this.modalYT);
+                this.modalYT = document.createElement('div')
+                this.modalYT.className = 'modal'
+                this.modalYT.style.display = 'none'
+                this.modalYT.style.position = 'fixed'
+                this.modalYT.style.zIndex = '1'
+                this.modalYT.style.left = '0'
+                this.modalYT.style.top = '0'
+                this.modalYT.style.width = '100%'
+                this.modalYT.style.height = '100%'
+                this.modalYT.style.overflow = 'auto'
+                this.modalYT.style.backgroundColor = 'rgba(0,0,0,0.4)'
+                document.body.appendChild(this.modalYT)
                 this.modalYT.addEventListener('click', (event) => {
                     this.modalYT.style.display = 'none'
                 })
 
-                this.modalContentYT = document.createElement('div');
-                this.modalContentYT.className = 'modal-content';
-                this.modalContentYT.style.backgroundColor = '#fefefe';
-                this.modalContentYT.style.margin = '15% auto';
-                this.modalContentYT.style.padding = '20px';
-                this.modalContentYT.style.border = '1px solid #888';
-                this.modalContentYT.style.width = '80%';
-                this.modalYT.appendChild(this.modalContentYT);
+                this.modalContentYT = document.createElement('div')
+                this.modalContentYT.className = 'modal-content'
+                this.modalContentYT.style.backgroundColor = '#fefefe'
+                this.modalContentYT.style.margin = '15% auto'
+                this.modalContentYT.style.padding = '20px'
+                this.modalContentYT.style.border = '1px solid #888'
+                this.modalContentYT.style.width = '80%'
+                this.modalYT.appendChild(this.modalContentYT)
 
-                this.message = document.createElement('p');
-                this.message.textContent = 'Trailer not found.';
-                this.message.style.textAlign = 'center';
-                this.modalContentYT.appendChild(this.message);
-                this.modalYT.style.display = 'block';
+                this.message = document.createElement('p')
+                this.message.textContent = 'Trailer not found.'
+                this.message.style.textAlign = 'center'
+                this.modalContentYT.appendChild(this.message)
+                this.modalYT.style.display = 'block'
             })
 
         }
@@ -307,30 +307,30 @@ export default class FilmotekaInfo {
     }
 
     displayGenres(genreIds) {
-        const genresContainer = document.querySelector('.genres-container');
-        genresContainer.innerHTML = '';
+        const genresContainer = document.querySelector('.genres-container')
+        genresContainer.innerHTML = ''
 
         genreIds.forEach(genreId => {
-            const genreElement = document.createElement('span');
-            genreElement.textContent = genreId;
-            genresContainer.appendChild(genreElement);
-        });
+            const genreElement = document.createElement('span')
+            genreElement.textContent = genreId
+            genresContainer.appendChild(genreElement)
+        })
     }
 
     closeModal() {
-        this.modal.style.display = 'none';
+        this.modal.style.display = 'none'
     }
 
     checkFilmInLists(filmId) {
-        const queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
-        const watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
-        const isInQueue = queueMovies.some(movie => movie.id === filmId);
-        const isInWatched = watchedMovies.some(movie => movie.id === filmId);
+        const queueMovies = JSON.parse(localStorage.getItem('queue')) || []
+        const watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
+        const isInQueue = queueMovies.some(movie => movie.id === filmId)
+        const isInWatched = watchedMovies.some(movie => movie.id === filmId)
 
         if (isInQueue || isInWatched) {
-            const deleteButton = document.querySelector('.btn-danger');
+            const deleteButton = document.querySelector('.btn-danger')
             if (deleteButton) {
-                deleteButton.style.display = 'block';
+                deleteButton.style.display = 'block'
             }
         }
     }
