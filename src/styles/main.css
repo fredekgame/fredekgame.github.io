@@ -233,7 +233,7 @@ footer p {
     }
 }
 
-.clossrdBTN {
+.clossrdBTN, .card-title, .card-img-top {
     cursor: pointer;
 }
 
@@ -245,4 +245,8 @@ h1 a {
 .delete-btn {
     margin-left: 20px;
     color: RED !important;
+}
+
+.pag-nav {
+    display: flex !important;
 }

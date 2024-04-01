@@ -34,7 +34,7 @@ export default class FilmotekaInfo {
                 this.playerVideo(response)
             })
             .catch(err => console.error(err))
-        
+
         this.checkFilmInLists(filmId)
     }
 
@@ -194,6 +194,7 @@ export default class FilmotekaInfo {
         }
 
         this.buttonQE.addEventListener('click', function (event) {
+            this.buttonQE.textContent = 'ADDED TO QUEUE'
             let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
             queueMovies.push(filmInfo)
             this.isInQueue = queueMovies.some(movie => movie.id === filmData.id)
@@ -201,30 +202,12 @@ export default class FilmotekaInfo {
         }.bind(this))
 
         this.buttonWT.addEventListener('click', function (event) {
+            this.buttonWT.textContent = 'ADDED TO WATHED'
             let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
             watchedMovies.push(filmInfo)
             console.log(filmInfo)
             this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id)
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
-        }.bind(this))
-
-        this.buttonDT = document.createElement('button')
-        this.buttonDT.className = 'btn btn-danger'
-        this.buttonDT.type = 'button'
-        this.buttonDT.style.display = 'none'
-        this.buttonDT.textContent = 'DELETE FROM LIST'
-        this.informBody.appendChild(this.buttonDT)
-
-        this.buttonDT.addEventListener('click', function (event) {
-            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
-            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
-
-            watchedMovies = watchedMovies.filter(movie => movie.id !== filmData.id)
-            queueMovies = queueMovies.filter(movie => movie.id !== filmData.id)
-            localStorage.setItem('watched', JSON.stringify(watchedMovies))
-            localStorage.setItem('queue', JSON.stringify(queueMovies))
-
-            this.closeModal()
         }.bind(this))
 
         document.body.appendChild(this.modal)
@@ -250,7 +233,7 @@ export default class FilmotekaInfo {
             const player = YouTubePlayer(newPlayer, {
                 width: 640,
                 height: 360,
-                videoId: `${key}`, 
+                videoId: `${key}`,
             })
 
             this.buttonYT.addEventListener('click', function () {

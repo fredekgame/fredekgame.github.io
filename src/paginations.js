@@ -19,9 +19,15 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchMovies(currentPage)
         });
 
+
         const paginationContainer = document.createElement('div')
-        paginationContainer.className = 'pagination-container d-flex justify-content-center'
-        document.body.appendChild(paginationContainer)
+        paginationContainer.className = 'pagination-container pag-nav justify-content-center'
+        document.body.insertBefore(paginationContainer, document.getElementById('footer'));
+
+        const searchButton = document.getElementById('searchButton');
+        searchButton.addEventListener('submit', () => {
+            paginationContainer.style.display = 'none';
+        });
 
         const prevButton = createPaginationButton('Previous', () => {
             if (currentPage > 1) {
@@ -143,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')
                 this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
                 this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
-                
+
                 this.a = document.createElement('button')
                 this.a.className = 'btn btn-link'
                 this.a.type = 'button'
@@ -154,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const createModal = new FilmotekaInfo(this.filmidss_)
                     createModal.loadData(this.filmidss_)
                 })
-                
+
                 function getGenreName(genreId) {
                     const genreMapping = {
                         12: "Adventure",

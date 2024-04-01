@@ -40,7 +40,13 @@ class Filmoteka {
         this.contentImage.src = `https://image.tmdb.org/t/p/w500${film.poster_path}`
         this.contentImage.className = "card-img-top"
         this.contentImage.alt = "..."
+        this.contentImage.type = 'button'
         this.mainDiv.appendChild(this.contentImage)
+        this.contentImage.addEventListener('click', (event) => {
+            event.preventDefault();
+            const createModal = new FilmotekaInfo(this.filmidss_)
+            createModal.loadData(this.filmidss_)
+        });
 
         this.secondDiv = document.createElement('div')
         this.secondDiv.className = 'card-body'
@@ -48,10 +54,21 @@ class Filmoteka {
 
         this.title = document.createElement('h5')
         this.title.className = 'card-title'
+        this.title.type = 'button'
         this.title.textContent = film.title || film.name
         this.secondDiv.appendChild(this.title)
+        this.title.addEventListener('click', (event) => {
+            event.preventDefault();
+            const createModal = new FilmotekaInfo(this.filmidss_)
+            createModal.loadData(this.filmidss_)
+        });
 
-        this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
+        if (film.genre_ids && film.genre_ids.length > 0) {
+            this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
+        } else {
+            this.genres = 'No  available'
+        }
+
         this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
         this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
 

@@ -43,7 +43,7 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
     const paginationContainer = document.createElement('nav')
     paginationContainer.setAttribute('aria-label', 'Page navigation')
     paginationContainer.id = 'pagination'
-    paginationContainer.classList.add('d-flex', 'justify-content-center')
+    paginationContainer.classList.add('pag-nav', 'justify-content-center')
 
     const paginationList = document.createElement('div')
     paginationList.classList.add('btn-group')
@@ -169,8 +169,17 @@ class SearchFilmoteka {
         this.title.textContent = film.title || film.name
         this.secondDiv.appendChild(this.title)
 
-        this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')
-        this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
+        if (film.genre_ids && film.genre_ids.length > 0) {
+            this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
+        } else {
+            this.genres = 'Unknown Genre'
+        }
+        if (film.release_date && film.release_date.length > 0) {
+            this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
+        } else {
+            this.releaseYear = 'Unknown Year'
+        }
+
         this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
 
         this.aT = document.createElement('button')
