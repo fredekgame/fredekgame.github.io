@@ -24,26 +24,25 @@ class FilmotekaQueue {
     }
 
     renderQueueMovies() {
-        this.clearContainer()
-        const queueMovies = this.getQueueMovies()
+        this.clearContainer();
+        const queueMovies = this.getQueueMovies();
         queueMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
-                this.addFilm(movie)
-                this.addedMovies[movie.id] = true
+                this.addFilm(movie);
+                this.addedMovies[movie.id] = true;
             }
-        })
+        });
     }
 
     renderWatchedMovies() {
-        this.clearContainer()
-        const watchedMovies = this.getWatchedMovies()
+        this.clearContainer();
+        const watchedMovies = this.getWatchedMovies();
         watchedMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
                 this.addFilm(movie);
-                this.addedMovies[movie.id] = true
+                this.addedMovies[movie.id] = true;
             }
-        })
-
+        });
     }
 
     clearContainer() {
@@ -94,6 +93,7 @@ class FilmotekaQueue {
         this.secondDiv.appendChild(this.ad)
 
         movie.domElement = this.column
+        this.addedMovies[movie.id] = 'watched'
 
         this.deleteBtn = document.createElement('button')
         this.deleteBtn.className = 'btn btn-link delete-btn'
@@ -114,18 +114,51 @@ class FilmotekaQueue {
             const createModal = new FilmotekaInfo(this.filmidss_);
             createModal.loadData(this.filmidss_);
         });
+
+        this.ad.addEventListener('click', (event) => {
+            event.preventDefault();
+            const currentCategory = this.addedMovies[movie.id];
+
+            if (currentCategory === 'watched') {
+                let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+                queueMovies.push(movie);
+                localStorage.setItem('queue', JSON.stringify(queueMovies));
+                const watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
+                const updatedWatchedMovies = watchedMovies.filter((m) => m.id !== movie.id);
+                localStorage.setItem('watched', JSON.stringify(updatedWatchedMovies));
+            } else if (currentCategory === 'queue') {
+                let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
+                watchedMovies.push(movie);
+                localStorage.setItem('watched', JSON.stringify(watchedMovies));
+                const queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+                const updatedQueueMovies = queueMovies.filter((m) => m.id !== movie.id);
+                localStorage.setItem('queue', JSON.stringify(updatedQueueMovies));
+            }
+
+            this.clearContainer();
+            this.renderWatchedMovies();
+            this.renderQueueMovies();
+        });
     }
 
     removeFromDatabase(movieId) {
-        let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
-        let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
+        let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+        let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
 
-        queueMovies = queueMovies.filter(movie => movie.id !== movieId)
-        watchedMovies = watchedMovies.filter(movie => movie.id !== movieId)
+        const queueMovieIndex = queueMovies.findIndex(movie => movie.id === movieId);
+        const watchedMovieIndex = watchedMovies.findIndex(movie => movie.id === movieId);
 
-        localStorage.setItem('queue', JSON.stringify(queueMovies))
-        localStorage.setItem('watched', JSON.stringify(watchedMovies))
+        if (queueMovieIndex !== -1) {
+            queueMovies.splice(queueMovieIndex, 1); // Remove the movie from the queue
+            localStorage.setItem('queue', JSON.stringify(queueMovies));
+        }
+
+        if (watchedMovieIndex !== -1) {
+            watchedMovies.splice(watchedMovieIndex, 1); // Remove the movie from the watched list
+            localStorage.setItem('watched', JSON.stringify(watchedMovies));
+        }
     }
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
