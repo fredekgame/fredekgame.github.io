@@ -174,13 +174,13 @@ export default class FilmotekaInfo {
         this.footerbuddy.appendChild(this.buttonBlock)
 
         this.buttonWT = document.createElement('button')
-        this.buttonWT.className = 'btn btn-warning'
+        this.buttonWT.className = 'btn btn-warning watched'
         this.buttonWT.type = 'button'
         this.buttonWT.textContent = 'ADD TO WATCHED'
         this.informBody.appendChild(this.buttonWT)
 
         this.buttonQE = document.createElement('button')
-        this.buttonQE.className = 'btn btn-outline-dark'
+        this.buttonQE.className = 'btn btn-outline-dark queue'
         this.buttonQE.type = 'button'
         this.buttonQE.textContent = 'ADD TO QUEUE'
         this.informBody.appendChild(this.buttonQE)

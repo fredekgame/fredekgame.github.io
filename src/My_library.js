@@ -29,7 +29,7 @@ class FilmotekaQueue {
         queueMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
                 this.addFilm(movie);
-                this.addedMovies[movie.id] = true;
+                this.addedMovies[movie.id] = 'queue';
             }
         });
     }
@@ -40,7 +40,7 @@ class FilmotekaQueue {
         watchedMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
                 this.addFilm(movie);
-                this.addedMovies[movie.id] = true;
+                this.addedMovies[movie.id] = 'watched';
             }
         });
     }
@@ -118,6 +118,8 @@ class FilmotekaQueue {
         this.ad.addEventListener('click', (event) => {
             event.preventDefault();
             const currentCategory = this.addedMovies[movie.id];
+            const buttonWT = document.querySelector('.watched')
+            const buttonQE = document.querySelector('.queue')
 
             if (currentCategory === 'watched') {
                 let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
@@ -135,6 +137,12 @@ class FilmotekaQueue {
                 localStorage.setItem('queue', JSON.stringify(updatedQueueMovies));
             }
 
+            // if (currentCategory === 'watched') {
+            //     buttonWT.classList.add(' disabled')
+            // } else if (currentCategory === 'queue') {
+            //     buttonQE.classList.add('disabled')
+            // }
+
             this.clearContainer();
             this.renderWatchedMovies();
             this.renderQueueMovies();
@@ -149,12 +157,12 @@ class FilmotekaQueue {
         const watchedMovieIndex = watchedMovies.findIndex(movie => movie.id === movieId);
 
         if (queueMovieIndex !== -1) {
-            queueMovies.splice(queueMovieIndex, 1); // Remove the movie from the queue
+            queueMovies.splice(queueMovieIndex, 1)
             localStorage.setItem('queue', JSON.stringify(queueMovies));
         }
 
         if (watchedMovieIndex !== -1) {
-            watchedMovies.splice(watchedMovieIndex, 1); // Remove the movie from the watched list
+            watchedMovies.splice(watchedMovieIndex, 1)
             localStorage.setItem('watched', JSON.stringify(watchedMovies));
         }
     }

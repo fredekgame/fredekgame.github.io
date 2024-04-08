@@ -207,6 +207,8 @@ footer {
     padding: 10px;
     text-align: center;
     margin-top: 10px;
+    position: relative;
+    width: 100%;
 }
 
 footer p {
@@ -233,7 +235,9 @@ footer p {
     }
 }
 
-.clossrdBTN, .card-title, .card-img-top {
+.clossrdBTN,
+.card-title,
+.card-img-top {
     cursor: pointer;
 }
 
