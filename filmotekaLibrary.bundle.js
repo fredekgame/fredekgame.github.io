@@ -369,7 +369,7 @@ eval("module.exports = \"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"library": 0
+/******/ 			"filmotekaLibrary": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -397,7 +397,7 @@ eval("module.exports = \"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/My_library.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/filmoteka_library.js");
 /******/ 	
 /******/ })()
 ;
