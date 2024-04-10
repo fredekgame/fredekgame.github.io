@@ -1,15 +1,15 @@
 import './styles/main.css'
-import FilmotekaInfo from './filmoteka'
+import FilmotekaInfo from './filmoteka_library'
 
-class FilmotekaQueue {
+export default class FilmotekaQueue {
     constructor(container) {
         this.container = container
         this.watchedBtn = document.getElementById('watchedBtn')
         this.queueBtn = document.getElementById('queueBtn')
         this.addedMovies = {}
+        // this.addFilm = this.addFilm.bind(this)
 
         this.initializeLibrary()
-
         this.renderWatchedMovies()
     }
 
@@ -21,6 +21,20 @@ class FilmotekaQueue {
         this.queueBtn.addEventListener('click', () => {
             this.renderQueueMovies()
         })
+
+        // function deleteCallback(filmId) {
+        //     this.removeFromDatabase(filmId);
+        //     this.container.removeChild(this.column)
+        //     this.close/// Call the remove function of FilmotekaQueue
+        //     // Optionally, trigger any UI updates here
+        // }
+
+        // const filmotekaInfo = new FilmotekaInfo();
+        // filmotekaInfo.createMOdal(deleteCallback)
+
+        // const container = document.getElementById('filmContainer');
+        // const filmotekaInfo = new FilmotekaInfo();
+        // filmotekaInfo.createMOdal(filmId);
     }
 
     renderQueueMovies() {
@@ -104,6 +118,14 @@ class FilmotekaQueue {
             this.container.removeChild(movie.domElement)
         });
 
+        
+        // this.buttonDT = document.getElementsByClassName('delete')
+        // this.buttonDT.addEventListener('click', (event) => {
+        //     event.preventDefault();
+        //     this.removeFromDatabase(movie.id);
+        //     this.container.removeChild(movie.domElement)
+        // });
+
         this.imageDeleteBtn = document.createElement('i')
         this.imageDeleteBtn.className = 'i-delete-btn fa-solid fa-trash'
         this.deleteBtn.appendChild(this.imageDeleteBtn)
@@ -136,12 +158,6 @@ class FilmotekaQueue {
                 const updatedQueueMovies = queueMovies.filter((m) => m.id !== movie.id);
                 localStorage.setItem('queue', JSON.stringify(updatedQueueMovies));
             }
-
-            // if (currentCategory === 'watched') {
-            //     buttonWT.classList.add(' disabled')
-            // } else if (currentCategory === 'queue') {
-            //     buttonQE.classList.add('disabled')
-            // }
 
             this.clearContainer();
             this.renderWatchedMovies();
