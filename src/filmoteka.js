@@ -5,6 +5,12 @@ export default class FilmotekaInfo {
     }
 
     loadData(filmId) {
+
+        if (this.modal) {
+            document.body.removeChild(this.modal)
+            this.modal = null
+        }
+
         const options = {
             method: 'GET',
             headers: {
@@ -209,6 +215,12 @@ export default class FilmotekaInfo {
             this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id)
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }.bind(this))
+
+        document.addEventListener('click', (event) => {
+            if (event.target !== this.modal && !this.modal.contains(event.target)) {
+                this.closeModal();
+            }
+        })
 
         document.body.appendChild(this.modal)
         return this.modal

@@ -2,8 +2,8 @@ import YouTubePlayer from 'youtube-player'
 import FilmotekaQueue from './My_library'
 
 export default class FilmotekaInfo {
-    constructor() {
-        this.filmId = null
+    constructor(currentTab) {
+        this.currentTab = currentTab
     }
 
     loadData(filmId) {
@@ -54,6 +54,8 @@ export default class FilmotekaInfo {
     
 
     createMOdal(filmData) {
+        const currentTab = this.currentTab()
+        
         this.modal = document.createElement('div')
         this.modal.classList.add('modalBody')
         this.modal.style.display = 'block'
@@ -205,19 +207,24 @@ export default class FilmotekaInfo {
         this.buttonDT.className = 'btn btn-danger delete'
         this.buttonDT.type = 'button'
         this.buttonDT.textContent = 'DELETE'
-        this.informBody.appendChild(this.buttonDT)
+        // this.informBody.appendChild(this.buttonDT)
 
-        // this.buttonDT.addEventListener('click', (event) => {
-        //     event.preventDefault();
-        //     deleteCallback(filmData.id); // Call the delete callback
-        //     this.closeModal(); // Close the modal after deleting
-        // })
+        this.buttonDT.addEventListener('click', function () {
+            this.removeFromDatabase(filmData.id);
+            this.closeModal();
+        }.bind(this))
 
-        // this.buttonDT.addEventListener('click', (event) => {
-        //     event.preventDefault();
-        //     this.removeFromDatabase(movie.id);
-        //     this.container.removeChild(movie.domElement)
-        // });
+        this.buttonDT.addEventListener('click', (event) => {
+            event.preventDefault();
+            deleteCallback(filmData.id); // Call the delete callback
+            this.closeModal(); // Close the modal after deleting
+        })
+
+        this.buttonDT.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.removeFromDatabase(movie.id);
+            this.container.removeChild(movie.domElement)
+        });
 
         const filmInfo = {
             id: filmData.id,
@@ -244,8 +251,34 @@ export default class FilmotekaInfo {
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }.bind(this))
 
+        // console.log(this.currentTab)
+
+        if (currentTab === 'watched') {
+            this.buttonWT.classList.add('disabled');
+        } else if (currentTab === 'queue') {
+            this.buttonQE.classList.add('disabled');
+        }
+
         document.body.appendChild(this.modal)
         return this.modal
+    }
+
+    removeFromDatabase(filmId) {
+        let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
+        let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
+
+        const queueMovieIndex = queueMovies.findIndex(movie => movie.id === filmId.id);
+        const watchedMovieIndex = watchedMovies.findIndex(movie => movie.id === filmId.id);
+
+        if (queueMovieIndex !== -1) {
+            queueMovies.splice(queueMovieIndex, 1)
+            localStorage.setItem('queue', JSON.stringify(queueMovies));
+        }
+
+        if (watchedMovieIndex !== -1) {
+            watchedMovies.splice(watchedMovieIndex, 1)
+            localStorage.setItem('watched', JSON.stringify(watchedMovies));
+        }
     }
 
     playerVideo(videoId) {
