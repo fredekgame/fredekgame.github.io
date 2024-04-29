@@ -4,8 +4,8 @@ import FilmotekaInfo from './filmoteka_library'
 export default class FilmotekaQueue {
     constructor(container) {
         this.container = container
-        this.watchedBtn = document.getElementById('watchedBtn')
-        this.queueBtn = document.getElementById('queueBtn')
+        this.watchedBtn = document.querySelector('#watchedBtn')
+        this.queueBtn = document.querySelector('#queueBtn')
         this.addedMovies = {}
         this.currentTab = 'watched'
         
@@ -15,48 +15,49 @@ export default class FilmotekaQueue {
     }
 
     switchTab(tab) {
-        this.currentTab = tab;
+        this.currentTab = tab
+        this.clearContainer()
         if (tab === 'watched') {
-            this.renderWatchedMovies();
-        } else if (tab === 'queue') {
-            this.renderQueueMovies();
+            this.renderWatchedMovies()
+        } else {
+            this.renderQueueMovies()
         }
     }
 
     initializeLibrary() {
         this.watchedBtn.addEventListener('click', () => {
-            this.switchTab('watched');
+            this.switchTab('watched')
         })
 
         this.queueBtn.addEventListener('click', () => {
-            this.switchTab('queue');
+            this.switchTab('queue')
         })
     }
 
     renderQueueMovies() {
-        this.clearContainer();
-        const queueMovies = this.getQueueMovies();
+        this.clearContainer()
+        const queueMovies = this.getQueueMovies()
         queueMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
-                this.addFilm(movie);
-                this.addedMovies[movie.id] = 'queue';
+                this.addFilm(movie)
             }
         });
     }
 
     renderWatchedMovies() {
         this.clearContainer();
-        const watchedMovies = this.getWatchedMovies();
+        const watchedMovies = this.getWatchedMovies()
         watchedMovies.forEach(movie => {
             if (!this.addedMovies[movie.id]) {
-                this.addFilm(movie);
-                this.addedMovies[movie.id] = 'watched';
+                this.addFilm(movie)
             }
         });
     }
 
     clearContainer() {
-        this.container.innerHTML = ''
+        while (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild);
+        }
         this.addedMovies = {}
     }
 
@@ -69,6 +70,8 @@ export default class FilmotekaQueue {
     }
 
     addFilm(movie) {
+        if (this.addedMovies[movie.id]) return
+
         this.column = document.createElement('div')
         this.column.className = 'col-sm-4'
         this.container.appendChild(this.column)
@@ -102,7 +105,7 @@ export default class FilmotekaQueue {
         this.secondDiv.appendChild(this.ad)
 
         movie.domElement = this.column
-        this.addedMovies[movie.id] = 'watched'
+        this.addedMovies[movie.id] = this.currentTab
 
         this.deleteBtn = document.createElement('button')
         this.deleteBtn.className = 'btn btn-link delete-btn'
@@ -124,60 +127,49 @@ export default class FilmotekaQueue {
             createModal.loadData(this.filmidss_);
         });
 
-        this.buttonWT.addEventListener('click', (event) => {
-            event.preventDefault();
-            const currentCategory = this.currentTab;
+        this.ad.addEventListener('click', (event) => {
+            event.preventDefault()
 
-            if (currentCategory === 'queue') {
-                let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
-                watchedMovies.push(movie);
-                localStorage.setItem('watched', JSON.stringify(watchedMovies));
-                const queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
-                const updatedQueueMovies = queueMovies.filter((m) => m.id !== movie.id);
-                localStorage.setItem('queue', JSON.stringify(updatedQueueMovies));
-                this.addedMovies[movie.id] = 'watched';
-            }
-
-            this.clearContainer();
-            this.renderWatchedMovies();
-            this.renderQueueMovies();
-        });
-
-        this.buttonQE.addEventListener('click', (event) => {
-            event.preventDefault();
-            const currentCategory = this.currentTab;
+            const currentCategory = this.addedMovies[movie.id]
+            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
+            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
 
             if (currentCategory === 'watched') {
-                let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
-                queueMovies.push(movie);
-                localStorage.setItem('queue', JSON.stringify(queueMovies));
-                const watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
-                const updatedWatchedMovies = watchedMovies.filter((m) => m.id !== movie.id);
-                localStorage.setItem('watched', JSON.stringify(updatedWatchedMovies));
-                this.addedMovies[movie.id] = 'queue';
+                watchedMovies = watchedMovies.filter((m) => m.id !== movie.id)
+            } else {
+                queueMovies = queueMovies.filter((m) => m.id !== movie.id)
             }
 
-            this.clearContainer();
-            this.renderWatchedMovies();
-            this.renderQueueMovies();
-        });
+            if (currentCategory === 'watched') {
+                queueMovies.push(movie);
+                this.addedMovies[movie.id] = 'queue'; // Update internal state
+            } else {
+                watchedMovies.push(movie);
+                this.addedMovies[movie.id] = 'watched'; // Update internal state
+            }
+
+            localStorage.setItem('queue', JSON.stringify(queueMovies))
+            localStorage.setItem('watched', JSON.stringify(watchedMovies))
+
+            this.switchTab(currentCategory === 'watched' ? 'queue' : 'watched')
+        })
     }
 
     removeFromDatabase(movieId) {
-        let queueMovies = JSON.parse(localStorage.getItem('queue')) || [];
-        let watchedMovies = JSON.parse(localStorage.getItem('watched')) || [];
+        let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
+        let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
 
-        const queueMovieIndex = queueMovies.findIndex(movie => movie.id === movieId);
-        const watchedMovieIndex = watchedMovies.findIndex(movie => movie.id === movieId);
+        const queueMovieIndex = queueMovies.findIndex(movie => movie.id === movieId)
+        const watchedMovieIndex = watchedMovies.findIndex(movie => movie.id === movieId)
 
         if (queueMovieIndex !== -1) {
             queueMovies.splice(queueMovieIndex, 1)
-            localStorage.setItem('queue', JSON.stringify(queueMovies));
+            localStorage.setItem('queue', JSON.stringify(queueMovies))
         }
 
         if (watchedMovieIndex !== -1) {
             watchedMovies.splice(watchedMovieIndex, 1)
-            localStorage.setItem('watched', JSON.stringify(watchedMovies));
+            localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }
     }
 }
@@ -202,9 +194,8 @@ document.addEventListener('DOMContentLoaded', function () {
             queueBtn.classList.add('active')
         }
     })
-})
 
-document.addEventListener('DOMContentLoaded', function () {
-    const container = document.getElementById('filmContainer');
-    const filmotekaQueue = new FilmotekaQueue(container);
-});
+    const container = document.getElementById('filmContainer')
+    const filmotekaQueue = new FilmotekaQueue(container)
+
+})
