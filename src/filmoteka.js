@@ -26,8 +26,6 @@ export default class FilmotekaInfo {
                 const genres = response.genres
                 const genreIds = genres.map(genre => genre.id)
                 this.displayGenres(genreIds)
-
-
             })
 
             .catch(err => console.error(err))
@@ -36,7 +34,6 @@ export default class FilmotekaInfo {
         fetch(`https://api.themoviedb.org/3/movie/${filmId}/videos?language=en-US`, options)
             .then(response => response.json())
             .then(response => {
-                console.log(response)
                 this.playerVideo(response)
             })
             .catch(err => console.error(err))
@@ -45,6 +42,7 @@ export default class FilmotekaInfo {
     }
 
     createMOdal(filmData) {
+
         this.modal = document.createElement('div')
         this.modal.classList.add('modalBody')
         this.modal.style.display = 'block'
@@ -218,36 +216,35 @@ export default class FilmotekaInfo {
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }.bind(this))
 
-        document.addEventListener('click', (event) => {
-            if (event.target !== this.modal && !this.modal.contains(event.target)) {
-                this.closeModal();
-            }
+        this.buttonYT.addEventListener('click', (event) => {
+            this.closeModal()
         })
 
         document.body.appendChild(this.modal)
         return this.modal
     }
 
+    closeModal() {
+        this.modal.style.display = 'none'
+    }
+
     playerVideo(videoId) {
         const playerContainer = document.getElementById('youtubePlayer')
+
         const newPlayer = document.createElement('div')
         newPlayer.id = 'player'
-
         playerContainer.appendChild(newPlayer)
 
-        function containsOfficialAndTrailer(name) {
-            return name.toLowerCase().indexOf("official") !== -1 && name.toLowerCase().indexOf("trailer") !== -1
-        }
-
-        const trailerResult = videoId.results.find(result => containsOfficialAndTrailer(result.name))
+        const trailerResult = videoId.results.find(result =>
+            result.name.toLowerCase().includes("official") && result.name.toLowerCase().includes("trailer")
+        )
         const key = trailerResult ? trailerResult.key : null
 
         if (key) {
-            console.log(key);
-            const player = YouTubePlayer(newPlayer, {
+            const player = YouTubePlayer('player', {
                 width: 640,
                 height: 360,
-                videoId: `${key}`,
+                videoId: key,
             })
 
             this.buttonYT.addEventListener('click', function () {
@@ -260,6 +257,7 @@ export default class FilmotekaInfo {
                 document.getElementById('playerContainer').classList.remove('show')
                 document.getElementById('playerContainer').classList.add('hidden')
                 player.stopVideo()
+                // player.destroy()
 
                 while (playerContainer.firstChild) {
                     playerContainer.removeChild(playerContainer.firstChild)
@@ -312,10 +310,6 @@ export default class FilmotekaInfo {
             genreElement.textContent = genreId
             genresContainer.appendChild(genreElement)
         })
-    }
-
-    closeModal() {
-        this.modal.style.display = 'none'
     }
 
     checkFilmInLists(filmId) {

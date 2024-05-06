@@ -41,7 +41,6 @@ export default class FilmotekaInfo {
     }
 
     checkFilmInLists(id) {
-        console.log(id)
         // ... existing logic to check if movie is in lists ...
         const deleteButton = document.querySelector('.delete');
             deleteButton.addEventListener('click', () => {
@@ -204,30 +203,6 @@ export default class FilmotekaInfo {
         this.buttonQE.textContent = 'ADD TO QUEUE'
         this.informBody.appendChild(this.buttonQE)
 
-
-        this.buttonDT = document.createElement('button')
-        this.buttonDT.className = 'btn btn-danger delete'
-        this.buttonDT.type = 'button'
-        this.buttonDT.textContent = 'DELETE'
-        // this.informBody.appendChild(this.buttonDT)
-
-        this.buttonDT.addEventListener('click', function () {
-            this.removeFromDatabase(filmData.id);
-            this.closeModal();
-        }.bind(this))
-
-        this.buttonDT.addEventListener('click', (event) => {
-            event.preventDefault();
-            deleteCallback(filmData.id); // Call the delete callback
-            this.closeModal(); // Close the modal after deleting
-        })
-
-        this.buttonDT.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.removeFromDatabase(movie.id);
-            this.container.removeChild(movie.domElement)
-        });
-
         const filmInfo = {
             id: filmData.id,
             title: filmData.original_title,
@@ -237,6 +212,7 @@ export default class FilmotekaInfo {
         }
 
         this.buttonQE.addEventListener('click', function (event) {
+            location.reload()
             this.buttonQE.textContent = 'ADDED TO QUEUE'
             let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
             queueMovies.push(filmInfo)
@@ -245,6 +221,7 @@ export default class FilmotekaInfo {
         }.bind(this))
 
         this.buttonWT.addEventListener('click', function (event) {
+            location.reload()
             this.buttonWT.textContent = 'ADDED TO WATHED'
             let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
             watchedMovies.push(filmInfo)
@@ -252,6 +229,10 @@ export default class FilmotekaInfo {
             this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id)
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }.bind(this))
+
+        this.buttonYT.addEventListener('click', (event) => {
+            this.closeModal()
+        })
 
         // console.log(this.currentTab)
 
@@ -290,11 +271,9 @@ export default class FilmotekaInfo {
 
         playerContainer.appendChild(newPlayer)
 
-        function containsOfficialAndTrailer(name) {
-            return name.toLowerCase().indexOf("official") !== -1 && name.toLowerCase().indexOf("trailer") !== -1
-        }
-
-        const trailerResult = videoId.results.find(result => containsOfficialAndTrailer(result.name))
+        const trailerResult = videoId.results.find(result =>
+            result.name.toLowerCase().includes("official") && result.name.toLowerCase().includes("trailer")
+        )
         const key = trailerResult ? trailerResult.key : null
 
         if (key) {
@@ -302,7 +281,7 @@ export default class FilmotekaInfo {
             const player = YouTubePlayer(newPlayer, {
                 width: 640,
                 height: 360,
-                videoId: `${key}`,
+                videoId: key,
             })
 
             this.buttonYT.addEventListener('click', function () {

@@ -123,11 +123,45 @@ export default class FilmotekaQueue {
         this.ad.addEventListener('click', (event) => {
             event.preventDefault()
             this.filmidss_ = movie.id
-            const createModal = new FilmotekaInfo(() => this.currentTab);
+            const createModal = new FilmotekaInfo(() => this.currentTab)
             createModal.loadData(this.filmidss_);
+        })
+
+        this.contentImage.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.filmidss_ = movie.id
+            const createModal = new FilmotekaInfo(() => this.currentTab)
+            createModal.loadData(this.filmidss_)
         });
 
         this.ad.addEventListener('click', (event) => {
+            event.preventDefault()
+
+            const currentCategory = this.addedMovies[movie.id]
+            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
+            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
+
+            if (currentCategory === 'watched') {
+                watchedMovies = watchedMovies.filter((m) => m.id !== movie.id)
+            } else {
+                queueMovies = queueMovies.filter((m) => m.id !== movie.id)
+            }
+
+            if (currentCategory === 'watched') {
+                queueMovies.push(movie);
+                this.addedMovies[movie.id] = 'queue'; // Update internal state
+            } else {
+                watchedMovies.push(movie);
+                this.addedMovies[movie.id] = 'watched'; // Update internal state
+            }
+
+            localStorage.setItem('queue', JSON.stringify(queueMovies))
+            localStorage.setItem('watched', JSON.stringify(watchedMovies))
+
+            this.switchTab(currentCategory === 'watched' ? 'queue' : 'watched')
+        })
+
+        this.contentImage.addEventListener('click', (event) => {
             event.preventDefault()
 
             const currentCategory = this.addedMovies[movie.id]

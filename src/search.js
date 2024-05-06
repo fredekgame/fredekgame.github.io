@@ -159,6 +159,11 @@ class SearchFilmoteka {
         this.contentImage.className = "card-img-top"
         this.contentImage.alt = "No Image"
         this.mainDiv.appendChild(this.contentImage)
+        this.contentImage.addEventListener('click', (event) => {
+            event.preventDefault();
+            const createModal = new FilmotekaInfo(this.filmidss_)
+            createModal.loadData(this.filmidss_)
+        });
 
         this.secondDiv = document.createElement('div')
         this.secondDiv.className = 'card-body'

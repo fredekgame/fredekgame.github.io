@@ -61,6 +61,7 @@ class Filmoteka {
             event.preventDefault();
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
+            createModal.updateMOdal(this.filmidss_)
         });
 
         if (film.genre_ids && film.genre_ids.length > 0) {
@@ -81,6 +82,7 @@ class Filmoteka {
             event.preventDefault();
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
+            createModal.updateMOdal(this.filmidss_)
         });
 
         function getGenreName(genreId) {
