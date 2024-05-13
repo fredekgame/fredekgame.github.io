@@ -1,8 +1,7 @@
 import YouTubePlayer from 'youtube-player'
 
 export default class FilmotekaInfo {
-    constructor() {
-    }
+    constructor() {}
 
     loadData(filmId) {
 
@@ -27,7 +26,6 @@ export default class FilmotekaInfo {
                 const genreIds = genres.map(genre => genre.id)
                 this.displayGenres(genreIds)
             })
-
             .catch(err => console.error(err))
 
 
@@ -35,29 +33,29 @@ export default class FilmotekaInfo {
             .then(response => response.json())
             .then(response => {
                 this.playerVideo(response)
+                this.checkFilmInLists(response.id)
             })
             .catch(err => console.error(err))
-
-        this.checkFilmInLists(filmId)
     }
 
     createMOdal(filmData) {
-
         this.modal = document.createElement('div')
         this.modal.classList.add('modalBody')
         this.modal.style.display = 'block'
 
+        this.backdrop = document.createElement('div')
+        this.backdrop.classList.add('backdrop-modal')
+        this.backdrop.style.display = 'block'
+        this.backdrop.addEventListener('click', () => this.closeModal())
+
         this.closeButton = document.createElement('buttonModal')
         this.closeButton.innerHTML = 'X'
         this.closeButton.className = 'clossrdBTN'
-        this.closeButton.addEventListener('click', (event) => {
-            this.closeModal()
-        });
+        this.closeButton.addEventListener('click', () => this.closeModal())
         this.closeButton.style.position = 'absolute'
         this.closeButton.style.top = '10px'
         this.closeButton.style.right = '10px'
         this.modal.appendChild(this.closeButton)
-
 
         this.footerbuddy = document.createElement('div')
         this.footerbuddy.className = 'row'
@@ -191,6 +189,22 @@ export default class FilmotekaInfo {
         this.buttonQE.textContent = 'ADD TO QUEUE'
         this.informBody.appendChild(this.buttonQE)
 
+        if (!this.player) {
+            this.playerContainer = document.getElementById('playerContainer')
+            this.playerContainer.classList.add('hidden')
+            
+            this.newPlayer = document.createElement('div')
+            this.newPlayer.id = 'youtubePlayer'
+
+            this.playerContainer.appendChild(this.newPlayer)
+            document.body.appendChild(this.playerContainer)
+
+            this.player = YouTubePlayer('youtubePlayer', {
+                width: 640,
+                height: 360,
+            })
+        }
+
         const filmInfo = {
             id: filmData.id,
             title: filmData.original_title,
@@ -200,7 +214,8 @@ export default class FilmotekaInfo {
         }
 
         this.buttonQE.addEventListener('click', function (event) {
-            this.buttonQE.textContent = 'ADDED TO QUEUE'
+            event.preventDefault()
+            this.buttonQE.classList.add('disabled')
             let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
             queueMovies.push(filmInfo)
             this.isInQueue = queueMovies.some(movie => movie.id === filmData.id)
@@ -208,63 +223,42 @@ export default class FilmotekaInfo {
         }.bind(this))
 
         this.buttonWT.addEventListener('click', function (event) {
-            this.buttonWT.textContent = 'ADDED TO WATHED'
+            event.preventDefault()
+            this.buttonWT.classList.add('disabled')
             let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
             watchedMovies.push(filmInfo)
-            console.log(filmInfo)
             this.isInWatched = watchedMovies.some(movie => movie.id === filmData.id)
             localStorage.setItem('watched', JSON.stringify(watchedMovies))
         }.bind(this))
 
-        this.buttonYT.addEventListener('click', (event) => {
-            this.closeModal()
-        })
-
-        document.body.appendChild(this.modal)
-        return this.modal
+        this.backdrop.appendChild(this.modal)
+        document.body.appendChild(this.backdrop)
+        this.modal.addEventListener('click', (event) => event.stopPropagation())
     }
 
     closeModal() {
         this.modal.style.display = 'none'
+        this.backdrop.style.display = 'none'
+        document.body.style.overflow = 'auto'
     }
 
     playerVideo(videoId) {
-        const playerContainer = document.getElementById('youtubePlayer')
-
-        const newPlayer = document.createElement('div')
-        newPlayer.id = 'player'
-        playerContainer.appendChild(newPlayer)
-
-        const trailerResult = videoId.results.find(result =>
-            result.name.toLowerCase().includes("official") && result.name.toLowerCase().includes("trailer")
-        )
+        const trailerResult = videoId.results.find(result => result.name.toLowerCase().includes("official") && result.name.toLowerCase().includes("trailer"))
         const key = trailerResult ? trailerResult.key : null
 
         if (key) {
-            const player = YouTubePlayer('player', {
-                width: 640,
-                height: 360,
-                videoId: key,
-            })
-
-            this.buttonYT.addEventListener('click', function () {
+            this.buttonYT.addEventListener('click', () => {
+                this.player.loadVideoById(key)
                 document.getElementById('playerContainer').classList.remove('hidden')
                 document.getElementById('playerContainer').classList.add('show')
-                player.playVideo()
             })
-
-            this.closePlayerBtn.addEventListener('click', function () {
+            this.closePlayerBtn.addEventListener('click', () => {
+                this.player.stopVideo()
                 document.getElementById('playerContainer').classList.remove('show')
                 document.getElementById('playerContainer').classList.add('hidden')
-                player.stopVideo()
-                // player.destroy()
-
-                while (playerContainer.firstChild) {
-                    playerContainer.removeChild(playerContainer.firstChild)
-                }
-            })
+        }) 
         } else {
-            this.buttonYT.addEventListener('click', (event) => {
+            this.buttonYT.addEventListener('click', () => {
                 this.modalYT = document.createElement('div')
                 this.modalYT.className = 'modal'
                 this.modalYT.style.display = 'none'
@@ -277,9 +271,7 @@ export default class FilmotekaInfo {
                 this.modalYT.style.overflow = 'auto'
                 this.modalYT.style.backgroundColor = 'rgba(0,0,0,0.4)'
                 document.body.appendChild(this.modalYT)
-                this.modalYT.addEventListener('click', (event) => {
-                    this.modalYT.style.display = 'none'
-                })
+                this.modalYT.addEventListener('click', () => this.modalYT.style.display = 'none')
 
                 this.modalContentYT = document.createElement('div')
                 this.modalContentYT.className = 'modal-content'
@@ -296,9 +288,7 @@ export default class FilmotekaInfo {
                 this.modalContentYT.appendChild(this.message)
                 this.modalYT.style.display = 'block'
             })
-
         }
-
     }
 
     displayGenres(genreIds) {
@@ -320,9 +310,14 @@ export default class FilmotekaInfo {
 
         if (isInQueue || isInWatched) {
             const deleteButton = document.querySelector('.btn-danger')
-            if (deleteButton) {
-                deleteButton.style.display = 'block'
-            }
+            if (deleteButton) {deleteButton.style.display = 'block'}
+        }
+
+        if (isInQueue) {this.buttonQE.classList.add('disabled')}
+        if (isInWatched) {this.buttonWT.classList.add('disabled')}
+        if (isInQueue & isInWatched) {
+            this.buttonQE.classList.add('disabled')
+            this.buttonWT.classList.add('disabled')
         }
     }
 }

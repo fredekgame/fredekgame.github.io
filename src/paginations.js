@@ -15,19 +15,14 @@ document.addEventListener("DOMContentLoaded", function () {
         let currentPage = 1
         const maxDisplayedPages = 5
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchMovies(currentPage)
-        });
-
+        document.addEventListener('DOMContentLoaded', () => fetchMovies(currentPage))
 
         const paginationContainer = document.createElement('div')
         paginationContainer.className = 'pagination-container pag-nav justify-content-center'
-        document.body.insertBefore(paginationContainer, document.getElementById('footer'));
+        document.body.insertBefore(paginationContainer, document.getElementById('footer'))
 
-        const searchButton = document.getElementById('searchButton');
-        searchButton.addEventListener('submit', () => {
-            paginationContainer.style.display = 'none';
-        });
+        const searchButton = document.getElementById('searchButton')
+        searchButton.addEventListener('submit', () => paginationContainer.style.display = 'none')
 
         const prevButton = createPaginationButton('Previous', () => {
             if (currentPage > 1) {
@@ -52,11 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function createPaginationButton(label, onClick) {
             const button = document.createElement('button')
             button.className = 'btn btn-sm'
-            if (label === 'Previous') {
-                button.className += ' btn-primary'
-            } else if (label === 'Next') {
-                button.className += ' btn-primary'
-            }
+            if (label === 'Previous') {button.className += ' btn-primary'} else if (label === 'Next') {button.className += ' btn-primary'}
 
             button.textContent = label
             button.addEventListener('click', onClick)
@@ -69,22 +60,15 @@ document.addEventListener("DOMContentLoaded", function () {
             let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2))
             let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1)
 
-            if (endPage - startPage < maxDisplayedPages - 1) {
-                startPage = Math.max(1, endPage - maxDisplayedPages + 1)
-            }
+            if (endPage - startPage < maxDisplayedPages - 1) {startPage = Math.max(1, endPage - maxDisplayedPages + 1)}
 
             for (let i = startPage; i <= endPage; i++) {
                 const pageNumberButton = createPaginationButton(`${i}`, () => {
                     currentPage = i
                     fetchMovies(currentPage)
-                });
+                })
 
-                if (i === currentPage) {
-                    pageNumberButton.classList.add('btn-primary')
-                } else {
-                    pageNumberButton.classList.add('btn-secondary')
-                }
-
+                if (i === currentPage) {pageNumberButton.classList.add('btn-primary')} else {pageNumberButton.classList.add('btn-secondary')}
                 pageNumbersContainer.appendChild(pageNumberButton)
             }
         }
@@ -96,13 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(response => {
                     const films = response.results;
-                    const filmContainer = document.getElementsByClassName('row second')[0];
+                    const filmContainer = document.getElementsByClassName('row second')[0]
 
                     filmContainer.innerHTML = ''
-
-                    films.forEach(film => {
-                        new AllFilmoteka(film, filmContainer)
-                    });
+                    films.forEach(film => new AllFilmoteka(film, filmContainer))
 
                     totalPages = response.total_pages
                     updatePageNumbers()
@@ -111,9 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(err => console.error(err))
         }
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-        }
+        function scrollToTop() {window.scrollTo({ top: 0, behavior: 'smooth' })}
 
         let totalPages = 1
         updatePageNumbers()
@@ -140,7 +119,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     event.preventDefault();
                     const createModal = new FilmotekaInfo(this.filmidss_)
                     createModal.loadData(this.filmidss_)
-                });
+                    document.body.style.overflow = 'hidden'
+
+                })
 
                 this.secondDiv = document.createElement('div')
                 this.secondDiv.className = 'card-body'
@@ -164,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     event.preventDefault();
                     const createModal = new FilmotekaInfo(this.filmidss_)
                     createModal.loadData(this.filmidss_)
+                    document.body.style.overflow = 'hidden'
                 })
 
                 function getGenreName(genreId) {
@@ -196,11 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         10767: "Talk",
                         10768: "War & Politics"
                     }
-
                     return genreMapping[genreId] || 'Unknown Genre'
                 }
             }
         }
     }
 })
-

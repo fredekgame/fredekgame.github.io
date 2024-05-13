@@ -12,16 +12,14 @@ const options = {
 fetch('https://api.themoviedb.org/3/trending/all/day?language=en-US', options)
     .then(response => response.json())
     .then(response => {
-        const films = response.results;
-        const filmContainer = document.getElementsByClassName('row second');
+        const films = response.results
+        const filmContainer = document.getElementsByClassName('row second')
 
         Array.from(filmContainer).forEach(container => {
-            films.forEach(film => {
-                new Filmoteka(film, container)
-            })
+            films.forEach(film => new Filmoteka(film, container))
         })
     })
-    .catch(err => console.error(err));
+    .catch(err => console.error(err))
 
 class Filmoteka {
     constructor(film, container) {
@@ -43,10 +41,11 @@ class Filmoteka {
         this.contentImage.type = 'button'
         this.mainDiv.appendChild(this.contentImage)
         this.contentImage.addEventListener('click', (event) => {
-            event.preventDefault();
+            event.preventDefault()
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
-        });
+            document.body.style.overflow = 'hidden'
+        })
 
         this.secondDiv = document.createElement('div')
         this.secondDiv.className = 'card-body'
@@ -58,20 +57,17 @@ class Filmoteka {
         this.title.textContent = film.title || film.name
         this.secondDiv.appendChild(this.title)
         this.title.addEventListener('click', (event) => {
-            event.preventDefault();
+            event.preventDefault()
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
             createModal.updateMOdal(this.filmidss_)
-        });
+            document.body.style.overflow = 'hidden'
+        })
 
-        if (film.genre_ids && film.genre_ids.length > 0) {
-            this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
-        } else {
-            this.genres = 'No  available'
-        }
+        if (film.genre_ids && film.genre_ids.length > 0) {this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')} else {this.genres = 'No  available'}
 
-        this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : '';
-        this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : '';
+        this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
+        this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
 
         this.ad = document.createElement('button')
         this.ad.className = 'btn btn-link'
@@ -79,11 +75,12 @@ class Filmoteka {
         this.ad.textContent = `${this.genres} | ${this.releaseYear || this.airReleaseYear}`
         this.secondDiv.appendChild(this.ad)
         this.ad.addEventListener('click', (event) => {
-            event.preventDefault();
+            event.preventDefault()
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
             createModal.updateMOdal(this.filmidss_)
-        });
+            document.body.style.overflow = 'hidden'
+        })
 
         function getGenreName(genreId) {
             const genreMapping = {
@@ -114,20 +111,12 @@ class Filmoteka {
                 10766: "Soap",
                 10767: "Talk",
                 10768: "War & Politics"
-            };
-
-            return genreMapping[genreId] || 'Unknown Genre';
+            }
+            return genreMapping[genreId] || 'Unknown Genre'
         }
     }
 }
 
-const searchInput = document.getElementById('searchInput');
-const errorMessage = document.getElementById('errorMessage');
-
-searchInput.addEventListener('blur', function () {
-    if (this.value.trim() === '') {
-        errorMessage.style.display = 'block';
-    } else {
-        errorMessage.style.display = 'none';
-    }
-});
+const searchInput = document.getElementById('searchInput')
+const errorMessage = document.getElementById('errorMessage')
+searchInput.addEventListener('blur', function () {if (this.value.trim() === '') {errorMessage.style.display = 'block'} else {errorMessage.style.display = 'none'}})

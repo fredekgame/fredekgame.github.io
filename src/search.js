@@ -19,12 +19,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             searchMovies(searchInput, filmContainer, currentPage)
         }
-    });
+    })
 
     searchMovies('', filmContainer, currentPage)
 
     addPagination('', filmContainer, 0, currentPage)
-});
+})
 
 const options = {
     method: 'GET',
@@ -32,13 +32,12 @@ const options = {
         accept: 'application/json',
         Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOTQzZDU0YWQ3YjRlOTU2ZTM0ODc5NTdkODE0Y2VhZCIsInN1YiI6IjY1OGM1MDVmMzAzYzg1MDcxOGE1NGUyNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l8WuJ13hO2VbApbmpEtMEuhAmw5eQdfXAdTyqDGoZYc'
     }
-};
+}
 
 function addPagination(searchInput, filmContainer, totalPages, currentPage) {
     const existingPagination = document.getElementById('pagination')
-    if (existingPagination) {
-        existingPagination.parentNode.removeChild(existingPagination)
-    }
+    
+    if (existingPagination) { existingPagination.parentNode.removeChild(existingPagination) }
 
     const paginationContainer = document.createElement('nav')
     paginationContainer.setAttribute('aria-label', 'Page navigation')
@@ -50,7 +49,7 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
 
     const previousLink = document.createElement('button')
     previousLink.classList.add('btn', 'btn-primary')
-    previousLink.textContent = 'Previous';
+    previousLink.textContent = 'Previous'
 
     previousLink.addEventListener('click', (event) => {
         event.preventDefault()
@@ -59,8 +58,7 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
             searchMovies(searchInput, filmContainer, currentPage, options)
             searchForm.dispatchEvent(new Event('submit'))
         }
-    });
-
+    })
     paginationList.appendChild(previousLink)
 
     const startPage = Math.max(1, currentPage - 2)
@@ -76,7 +74,7 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
             currentPage = i
             searchMovies(searchInput, filmContainer, currentPage, options)
             scrollToTop()
-        });
+        })
         paginationList.appendChild(pageLink)
     }
 
@@ -91,10 +89,9 @@ function addPagination(searchInput, filmContainer, totalPages, currentPage) {
             searchMovies(searchInput, filmContainer, currentPage, options)
             scrollToTop()
         }
-    });
+    })
 
     paginationList.appendChild(nextLink)
-
     paginationContainer.appendChild(paginationList)
 
     const filmContainer_ = document.getElementsByClassName('row second')[0]
@@ -113,7 +110,6 @@ function searchMovies(searchInput, filmContainer, currentPage) {
         .then(response => response.json())
         .then(response => {
             const films = response.results
-
             filmContainer.innerHTML = ''
 
             films.forEach(film => {
@@ -150,12 +146,9 @@ class SearchFilmoteka {
         this.column.appendChild(this.mainDiv)
 
         this.contentImage = document.createElement('img')
-        console.log(options.title)
-        if (film.poster_path) {
-            this.contentImage.src = `https://image.tmdb.org/t/p/w500${film.poster_path}`
-        } else {
-            this.contentImage.src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
-        }
+
+        if (film.poster_path) { this.contentImage.src = `https://image.tmdb.org/t/p/w500${film.poster_path}` } else { this.contentImage.src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg' }
+        
         this.contentImage.className = "card-img-top"
         this.contentImage.alt = "No Image"
         this.mainDiv.appendChild(this.contentImage)
@@ -163,7 +156,8 @@ class SearchFilmoteka {
             event.preventDefault();
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
-        });
+            document.body.style.overflow = 'hidden'
+        })
 
         this.secondDiv = document.createElement('div')
         this.secondDiv.className = 'card-body'
@@ -174,17 +168,8 @@ class SearchFilmoteka {
         this.title.textContent = film.title || film.name
         this.secondDiv.appendChild(this.title)
 
-        if (film.genre_ids && film.genre_ids.length > 0) {
-            this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ');
-        } else {
-            this.genres = 'Unknown Genre'
-        }
-        if (film.release_date && film.release_date.length > 0) {
-            this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''
-        } else {
-            this.releaseYear = 'Unknown Year'
-        }
-
+        if (film.genre_ids && film.genre_ids.length > 0) {this.genres = film.genre_ids.map(genreId => getGenreName(genreId)).join(', ')} else {this.genres = 'Unknown Genre'}
+        if (film.release_date && film.release_date.length > 0) {this.releaseYear = film.release_date ? new Date(film.release_date).getFullYear() : ''} else {this.releaseYear = 'Unknown Year'}
         this.airReleaseYear = film.first_air_date ? new Date(film.first_air_date).getFullYear() : ''
 
         this.aT = document.createElement('button')
@@ -196,6 +181,7 @@ class SearchFilmoteka {
             event.preventDefault()
             const createModal = new FilmotekaInfo(this.filmidss_)
             createModal.loadData(this.filmidss_)
+            document.body.style.overflow = 'hidden'
         })
 
         function getGenreName(genreId) {
@@ -220,7 +206,6 @@ class SearchFilmoteka {
                 10752: "War",
                 10770: "TV Movie"
             }
-
             return genreMapping[genreId] || 'Unknown Genre'
         }
     }

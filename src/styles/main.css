@@ -96,9 +96,17 @@ button.btn-link:hover {
     background-color: transparent !important;
 }
 
-.modalBody {
-    display: none;
+.backdrop-modal{
     position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.modalBody {
+    position: absolute;
+    z-index: 100;
+    display: none;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -131,7 +139,6 @@ button.btn-link:hover {
 .about-blank {
     font-size: 0.9vw;
 }
-
 
 .voteCountAv {
     display: inline-block;
@@ -188,7 +195,6 @@ button.btn-link:hover {
 .hidden {
     display: none;
 }
-
 
 .show {
     display: block;

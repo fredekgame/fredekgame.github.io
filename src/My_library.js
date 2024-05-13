@@ -10,64 +10,37 @@ export default class FilmotekaQueue {
         this.currentTab = 'watched'
         
         this.initializeLibrary()
-        this.renderWatchedMovies()
-        
+        this.switchTab(this.currentTab)
     }
 
     switchTab(tab) {
         this.currentTab = tab
         this.clearContainer()
-        if (tab === 'watched') {
-            this.renderWatchedMovies()
-        } else {
-            this.renderQueueMovies()
-        }
+        if (tab === 'watched') {this.renderWatchedMovies()} else {this.renderQueueMovies()}
     }
 
     initializeLibrary() {
-        this.watchedBtn.addEventListener('click', () => {
-            this.switchTab('watched')
-        })
-
-        this.queueBtn.addEventListener('click', () => {
-            this.switchTab('queue')
-        })
+        this.watchedBtn.addEventListener('click', () => this.switchTab('watched'))
+        this.queueBtn.addEventListener('click', () => this.switchTab('queue'))
     }
 
     renderQueueMovies() {
-        this.clearContainer()
         const queueMovies = this.getQueueMovies()
-        queueMovies.forEach(movie => {
-            if (!this.addedMovies[movie.id]) {
-                this.addFilm(movie)
-            }
-        });
+        queueMovies.forEach(movie => {if (!this.addedMovies[movie.id]) {this.addFilm(movie)}})
     }
 
     renderWatchedMovies() {
-        this.clearContainer();
         const watchedMovies = this.getWatchedMovies()
-        watchedMovies.forEach(movie => {
-            if (!this.addedMovies[movie.id]) {
-                this.addFilm(movie)
-            }
-        });
+        watchedMovies.forEach(movie => {if (!this.addedMovies[movie.id]) {this.addFilm(movie)}})
     }
 
     clearContainer() {
-        while (this.container.firstChild) {
-            this.container.removeChild(this.container.firstChild);
-        }
+        while (this.container.firstChild) {this.container.removeChild(this.container.firstChild)}
         this.addedMovies = {}
     }
 
-    getWatchedMovies() {
-        return JSON.parse(localStorage.getItem('watched')) || []
-    }
-
-    getQueueMovies() {
-        return JSON.parse(localStorage.getItem('queue')) || []
-    }
+    getWatchedMovies() { return JSON.parse(localStorage.getItem('watched')) || []}
+    getQueueMovies() {return JSON.parse(localStorage.getItem('queue')) || []}
 
     addFilm(movie) {
         if (this.addedMovies[movie.id]) return
@@ -85,6 +58,13 @@ export default class FilmotekaQueue {
         this.contentImage.className = "card-img-top"
         this.contentImage.alt = "..."
         this.mainDiv.appendChild(this.contentImage)
+        this.contentImage.addEventListener('click', (event) => {
+            event.preventDefault()
+            this.filmidss_ = movie.id
+            const createModal = new FilmotekaInfo(() => this.currentTab)
+            createModal.loadData(this.filmidss_)
+            document.body.style.overflow = 'hidden'
+        })
 
         this.secondDiv = document.createElement('div')
         this.secondDiv.className = 'card-body'
@@ -103,90 +83,29 @@ export default class FilmotekaQueue {
         const genreIds = movie.ganre__.map(genre => genre.name)
         this.ad.textContent = `${genreIds.join(', ')} | ${this.releaseYear}`
         this.secondDiv.appendChild(this.ad)
+        this.ad.addEventListener('click', (event) => {
+            event.preventDefault()
+            this.filmidss_ = movie.id
+            const createModal = new FilmotekaInfo(() => this.currentTab)
+            createModal.loadData(this.filmidss_)
+            document.body.style.overflow = 'hidden'
+        })
 
         movie.domElement = this.column
         this.addedMovies[movie.id] = this.currentTab
 
         this.deleteBtn = document.createElement('button')
         this.deleteBtn.className = 'btn btn-link delete-btn'
-        this.secondDiv.appendChild(this.deleteBtn);
+        this.secondDiv.appendChild(this.deleteBtn)
         this.deleteBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.removeFromDatabase(movie.id);
+            event.preventDefault()
+            this.removeFromDatabase(movie.id)
             this.container.removeChild(movie.domElement)
-        });
+        })
 
         this.imageDeleteBtn = document.createElement('i')
         this.imageDeleteBtn.className = 'i-delete-btn fa-solid fa-trash'
         this.deleteBtn.appendChild(this.imageDeleteBtn)
-
-        this.ad.addEventListener('click', (event) => {
-            event.preventDefault()
-            this.filmidss_ = movie.id
-            const createModal = new FilmotekaInfo(() => this.currentTab)
-            createModal.loadData(this.filmidss_);
-        })
-
-        this.contentImage.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.filmidss_ = movie.id
-            const createModal = new FilmotekaInfo(() => this.currentTab)
-            createModal.loadData(this.filmidss_)
-        });
-
-        this.ad.addEventListener('click', (event) => {
-            event.preventDefault()
-
-            const currentCategory = this.addedMovies[movie.id]
-            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
-            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
-
-            if (currentCategory === 'watched') {
-                watchedMovies = watchedMovies.filter((m) => m.id !== movie.id)
-            } else {
-                queueMovies = queueMovies.filter((m) => m.id !== movie.id)
-            }
-
-            if (currentCategory === 'watched') {
-                queueMovies.push(movie);
-                this.addedMovies[movie.id] = 'queue'; // Update internal state
-            } else {
-                watchedMovies.push(movie);
-                this.addedMovies[movie.id] = 'watched'; // Update internal state
-            }
-
-            localStorage.setItem('queue', JSON.stringify(queueMovies))
-            localStorage.setItem('watched', JSON.stringify(watchedMovies))
-
-            this.switchTab(currentCategory === 'watched' ? 'queue' : 'watched')
-        })
-
-        this.contentImage.addEventListener('click', (event) => {
-            event.preventDefault()
-
-            const currentCategory = this.addedMovies[movie.id]
-            let queueMovies = JSON.parse(localStorage.getItem('queue')) || []
-            let watchedMovies = JSON.parse(localStorage.getItem('watched')) || []
-
-            if (currentCategory === 'watched') {
-                watchedMovies = watchedMovies.filter((m) => m.id !== movie.id)
-            } else {
-                queueMovies = queueMovies.filter((m) => m.id !== movie.id)
-            }
-
-            if (currentCategory === 'watched') {
-                queueMovies.push(movie);
-                this.addedMovies[movie.id] = 'queue'; // Update internal state
-            } else {
-                watchedMovies.push(movie);
-                this.addedMovies[movie.id] = 'watched'; // Update internal state
-            }
-
-            localStorage.setItem('queue', JSON.stringify(queueMovies))
-            localStorage.setItem('watched', JSON.stringify(watchedMovies))
-
-            this.switchTab(currentCategory === 'watched' ? 'queue' : 'watched')
-        })
     }
 
     removeFromDatabase(movieId) {
@@ -211,25 +130,10 @@ export default class FilmotekaQueue {
 document.addEventListener('DOMContentLoaded', function () {
     const watchedBtn = document.getElementById('watchedBtn')
     const queueBtn = document.getElementById('queueBtn')
-    watchedBtn.classList.add('active')
-
-    watchedBtn.addEventListener('click', function () {
-        if (queueBtn.classList.contains('active')) {
-            queueBtn.classList.remove('active')
-        } else {
-            watchedBtn.classList.add('active')
-        }
-    });
-
-    queueBtn.addEventListener('click', function () {
-        if (watchedBtn.classList.contains('active')) {
-            watchedBtn.classList.remove('active')
-        } else {
-            queueBtn.classList.add('active')
-        }
-    })
-
     const container = document.getElementById('filmContainer')
     const filmotekaQueue = new FilmotekaQueue(container)
+    watchedBtn.classList.add('active')
 
+    watchedBtn.addEventListener('click', function () { if (queueBtn.classList.contains('active')) {queueBtn.classList.remove('active')} else {watchedBtn.classList.add('active')}})
+    queueBtn.addEventListener('click', function () {if (watchedBtn.classList.contains('active')) {watchedBtn.classList.remove('active')} else {queueBtn.classList.add('active')}})
 })
